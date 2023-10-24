@@ -2,7 +2,9 @@
 
 Service gets name, surname, patronymic(optional), adds age, gender and nationality via external apis to the PostgreSQL database
 >https://api.agify.io/?name=Dmitriy - for age
+>
 >https://api.genderize.io/?name=Dmitriy - for gender
+>
 >https://api.nationalize.io/?name=Dmitriy - for nationality
 
 ## API REST Methods
