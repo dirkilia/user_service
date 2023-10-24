@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"user_service/internal/api"
 	"user_service/internal/logging"
@@ -15,7 +14,7 @@ func main() {
 	logger := logging.GetLogger()
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logger.Infof("error loading config .env file: %v", err)
 	}
 
 	host := os.Getenv("HOST")
@@ -28,7 +27,7 @@ func main() {
 
 	store, err := repository.NewPostgresStore(connStr, logger)
 	if err != nil {
-		log.Fatal(err)
+		logger.Infof("error creating repository %v:", err)
 	}
 
 	server := api.NewAPIServer("localhost:8080", store, logger)

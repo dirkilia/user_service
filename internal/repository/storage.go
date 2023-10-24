@@ -37,7 +37,7 @@ func (s *PostgresStore) GetPersons(filterGender, filterAgeplus, filterAgeminus, 
 	str_query := generateQueryStringWithFilters(filterGender, filterAgeplus, filterAgeminus, filterNationality, limit, offset)
 	rows, err := s.db.Query(str_query)
 	if err != nil {
-		s.logger.Debugf("can't execute query GetPersons, error: %v", err)
+		s.logger.Infof("can't execute query GetPersons, error: %v", err)
 		return nil, err
 	}
 
@@ -65,18 +65,24 @@ func (s *PostgresStore) GetPersons(filterGender, filterAgeplus, filterAgeminus, 
 func (s *PostgresStore) AddPerson(person *types.Person) error {
 	query := `insert into persons (name, surname, patronymic, age, gender, nationality)
 	values ($1, $2, $3, $4, $5, $6)`
-	_, err := s.db.Exec(
-		query,
-		person.Name,
-		person.Surname,
-		person.Patronymic,
-		person.Age,
-		person.Gender,
-		person.Nationality)
-	if err != nil {
-		s.logger.Debugf("can't execute query AddPerson, error: %v", err)
-		return err
+	if person.Name != "" && person.Surname != "" {
+		_, err := s.db.Exec(
+			query,
+			person.Name,
+			person.Surname,
+			person.Patronymic,
+			person.Age,
+			person.Gender,
+			person.Nationality)
+
+		if err != nil {
+			s.logger.Debugf("can't execute query AddPerson, error: %v", err)
+			return err
+		}
+	} else {
+		s.logger.Info("name or surname is empty")
 	}
+
 	return nil
 }
 
@@ -84,18 +90,22 @@ func (s *PostgresStore) UpdatePerson(id int64, person *types.Person) error {
 	query := `update persons set name = $1, 
 	surname = $2, patronymic = $3, age = $4, gender = $5, nationality = $6
 	where id = $7`
-	_, err := s.db.Exec(
-		query,
-		person.Name,
-		person.Surname,
-		person.Patronymic,
-		person.Age,
-		person.Gender,
-		person.Nationality,
-		id)
-	if err != nil {
-		s.logger.Debugf("can't execute query DeletePersonById, error: %v", err)
-		return err
+	if person.Name != "" && person.Surname != "" {
+		_, err := s.db.Exec(
+			query,
+			person.Name,
+			person.Surname,
+			person.Patronymic,
+			person.Age,
+			person.Gender,
+			person.Nationality,
+			id)
+		if err != nil {
+			s.logger.Debugf("can't execute query DeletePersonById, error: %v", err)
+			return err
+		}
+	} else {
+		s.logger.Info("name or surname is empty")
 	}
 
 	return nil
@@ -104,7 +114,7 @@ func (s *PostgresStore) UpdatePerson(id int64, person *types.Person) error {
 func (s *PostgresStore) DeletePersonById(id int64) error {
 	_, err := s.db.Query("delete from persons where id = $1", id)
 	if err != nil {
-		s.logger.Debugf("can't execute query DeletePersonById, error: %v", err)
+		s.logger.Infof("can't execute query DeletePersonById, error: %v", err)
 		return err
 	}
 	return nil

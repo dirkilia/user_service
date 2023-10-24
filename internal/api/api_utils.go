@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"regexp"
 	"sort"
@@ -114,12 +113,12 @@ func getNationality(name string) (string, error) {
 	var nationality Nationality
 	body, err := getInfoFromExternalApi(name, NATIONALIZE_URL)
 	if err != nil {
-		log.Fatalf("cant get body nationality %s", err)
+		return "", errors.New("cant get body nationality")
 	}
 	err = json.Unmarshal(body, &nationality)
 
 	if err != nil {
-		log.Fatalf("cant unmarshal to nationality %s", err)
+		return "", errors.New("cant unmarshal to nationality")
 	}
 
 	if len(nationality.Country) == 0 {

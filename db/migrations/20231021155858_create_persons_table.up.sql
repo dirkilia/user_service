@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS persons (
     id SERIAL PRIMARY KEY NOT NULL,
-	name TEXT,
-	surname TEXT,
+	name TEXT NOT NULL,
+	surname TEXT NOT NULL,
 	patronymic TEXT,
 	age INTEGER,
 	gender TEXT,
